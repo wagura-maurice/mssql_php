@@ -381,45 +381,18 @@ Note: On RedHat, SELinux is installed by default and runs in Enforcing mode. To 
 Navigate to your system's document root -- `/var/www/html` on Ubuntu, Debian, and Redhat, `/srv/www/htdocs` on SUSE, or `/usr/local/var/www/htdocs` on Mac. Create a new file called testsql.php. Copy and paste the following code into testsql.php and change the servername, username, password and databasename.
 
     <?php
-    $serverName = "yourServername";
-    $connectionOptions = array(
-        "Database" => "yourDatabase",
-        "Uid" => "yourUsername",
-        "PWD" => "yourPassword"
-    );
-    //Establishes the connection
-    $conn = sqlsrv_connect( $serverName, $connectionOptions );
-    if( $conn === false ) {
-        die( FormatErrors( sqlsrv_errors()));
-    }
-    //Select Query
-    $tsql= "SELECT @@Version as SQL_VERSION";
-    //Executes the query
-    $getResults= sqlsrv_query( $conn, $tsql );
-    //Error handling
-     
-    if ( $getResults == FALSE )
-        die( FormatErrors( sqlsrv_errors()));
-    ?> 
-     <h1> Results : </h1>
-     <?php
-    while ( $row = sqlsrv_fetch_array( $getResults, SQLSRV_FETCH_ASSOC )) {
-        echo ( $row['SQL_VERSION']);
-        echo ("<br/>");
-    }
-    sqlsrv_free_stmt( $getResults );
-    function FormatErrors( $errors )  
-    {  
-        /* Display errors. */  
-        echo "Error information: <br/>";  
-      
-        foreach ( $errors as $error )  
-        {  
-            echo "SQLSTATE: ".$error['SQLSTATE']."<br/>";  
-            echo "Code: ".$error['code']."<br/>";  
-            echo "Message: ".$error['message']."<br/>";  
-        }  
-    }  
+    
+     $server = "127.0.0.1, 1433"; //serverName\instanceName, portNumber (default is 1433)
+     $dbInfo = array("Database" => "yourDatabase", "Uid" => "yourUsername", "PWD" => "yourPassword"); // database connection info
+     $db = sqlsrv_connect($server, $dbInfo); // connect to database on the set server
+
+     if($db) {
+        echo "connection established.<br />";
+     else {
+        echo "Connection could not be established. <br />";
+        die(print_r(sqlsrv_errors(), true));
+     }
+    
     ?>
 
 ### Step 7: Run your sample app
